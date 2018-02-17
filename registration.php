@@ -32,12 +32,34 @@
             <div class="text-center">
                 <img src="underdogs_logo.jpeg" class="rounded" alt="Logo" width="150" height="150" style="margin:10px">
             </div>    
-
-            <div class="alert alert-dark" role="alert" style="text-align:center">
-                <p><u>Match Details:</u></p>
-                <pre>Date           : <br>Time           : <br>Venue          : <br>Venue Address  : <br>Cost           : <br>Slots Remaining: <br></pre>
+        
+         <div class="col col-sm-9">
+            <div class="table-responsive">    
+                <table class="table table-sm table-hover table-dark">
+                    <thead id="matchList">
+                        <tr>
+                            <th scope="row">Date</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Time</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Venue</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Address</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Cost</th>
+                        </tr>
+                        <tr>
+                            <th scope="row">Slots Remaining</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
-
+        </div>
+        
             <div class="row">
             <div class="col col-sm-8" style="padding-bottom:30px">
                     <div class="form-group">
@@ -46,11 +68,11 @@
                     </div>
                     <div class="form-group">
                         <label for="contact">Mobile:</label>
-                        <input type="number" class="form-control" id="mobile">
+                        <input type="tel" class="form-control" id="mobile">
                     </div>
                     <div class="form-group">
                         <label for="whatsapp">Whatsapp (If Different):</label>
-                        <input type="number" class="form-control" id="whatsappNo">
+                        <input type="tel" class="form-control" id="whatsappNo">
                     </div>
                     <label for="speciality">Speciality:</label>
                     <br>
@@ -77,18 +99,20 @@
                     <br>
                     <button class="btn btn-secondary btn-lg btn-block" id="register">Register</button>
             </div>
-            <div class="col col-sm-3" style="margin-top:20px">
-            <div class="alert alert-dark" role="alert">
-                <p><u>Registered Players:</u></p>
-                <table id="playerList">
-                    <tr>
-                        <td>Ron</td>
-                        <td>Bowler Allrounder</td>
-                    <tr>
-                </table>
+                <div class="col col-sm-3" style="margin-top:20px">
+                    <div class="table-responsive">    
+                        <table class="table table-sm table-hover table-dark">
+                            <thead>
+                                <tr>
+                                    <th scope="row">Player</th>
+                                    <th scope="row">Speciality</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerList">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                </div>
-            </div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -119,6 +143,8 @@
                                     var html = '';
                                     if(errCode == 0) {
                                         alert(errMsg);
+                                        loadMatchDetails(mid);
+                                        $("input[type=text],input[type=tel]").val("");
                                     } else {
                                         alert(errMsg);
                                     }
@@ -144,10 +170,15 @@
                                                 });
 						$("#playerList").html(html);
 						
+                                                html = '';
 						$.each(data.results, function(i, vl){
 							
-							html += '<p><u>Match Details:</u></p>';
-                                                                '<pre>Date                                       : <br>Time           : <br>Venue          : <br>Venue Address  : <br>Cost           : <br>Slots Remaining: <br></pre>';
+							html += '<tr><th scope="row">Date</th><th scope="row">' + vl.matchDt + '</th></tr>';
+                                                        html += '<tr><th scope="row">Time</th><th scope="row">' + vl.matchTm + '</th></tr>';
+                                                        html += '<tr><th scope="row">Venue</th><th scope="row">' + vl.venueNm + '</th></tr>';
+                                                        html += '<tr><th scope="row">Address</th><th scope="row">' + (vl.address1 ? vl.address1 + ', ' : '')  + (vl.address2 ? vl.address2 + ', ' : '') + (vl.city ? vl.city + ', ' : '') + vl.state + '</th></tr>';
+                                                        html += '<tr><th scope="row">Cost</th><th scope="row">' + vl.cost + '</th></tr>';
+                                                        html += '<tr><th scope="row">Slots Remaining</th><th scope="row">' + vl.slotsAvail + '/' + vl.slotsAlotted + '</th></tr>';
 						});
 						$("#matchList").html(html);
 					}
