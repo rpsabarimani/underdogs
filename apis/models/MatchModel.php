@@ -9,7 +9,7 @@ class MatchModel {
         $this->db = $PDO;
     }
 
-    public function get($id = NULL) {
+    public function get($id = NULL, $type = NULL) {
         $sth = $this->db->prepare('SELECT 
                             id mid,
                             vanue_name venueNm,
@@ -33,10 +33,12 @@ class MatchModel {
             $row['slotsAvail'] = (string)($row['slotsAlotted'] - $row['slotsAvail']);
             $row['matchTm'] = date("h:i A", strtotime($row['matchDt']));
             $row['matchDt'] = date("d M, D", strtotime($row['matchDt']));
-            if($id)
-                $row['usr'] = $this->matchUsers($id);
+            if($id || $type)
+                $row['usr'] = $this->matchUsers($id ? $id : $row['mid']);
             $arr[] = $row;
         }
+		if($type) 
+			return $arr;
         if($arr) {
             $error = array('errCode' => 0, 'errMsg' => 'Data fetched successfully');
         } else {
@@ -47,11 +49,7 @@ class MatchModel {
 
     public function matchUsers($id = NULL) {
         $specialityArr = array("","Batsman","Bowler","Wicketkeeper Batsman","Batsman Allrounder","Bowler Allrounder ");
-        $sth = $this->db->prepare("SELECT 
-                            userid uid,
-                            (SELECT name FROM m_users WHERE id = uid AND active_flag = 1) uname,
-                            (SELECT speciality FROM m_users WHERE id = uid AND active_flag = 1) speciality
-                        FROM m_user_matching_mapping WHERE active_flag = 1 AND matchid = " . $id);
+        $sth = $this->db->prepare("SELECT userid uid, NAME uname, speciality, mobile, whatsapp_no FROM `m_users` usr INNER JOIN m_user_matching_mapping mm ON mm.userid = usr.id WHERE mm.active_flag = 1 AND matchid = " . $id);
         $sth->execute();
         $arr = array();
         $rows = $sth->fetchAll(PDO::FETCH_ASSOC);

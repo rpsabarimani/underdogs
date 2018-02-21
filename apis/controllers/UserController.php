@@ -14,7 +14,15 @@ class UserController {
         $whatsappNo = $params['whatsappNo'];
         $speciality = $params['speciality'];
         $matchId = $params['matchId'];
-        $res = $this->userModel->register($params);
+        
+        $mobRes = $this->userModel->checkMobile($mobile);
+        
+        if (!$mobRes) {
+            
+        } else {
+            $res = $this->userModel->register($params);
+        }
+
         return $res;
     }
 

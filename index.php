@@ -23,6 +23,7 @@
             color: white;
             font-family: courier;
             font-size: 125%;
+          height: auto;
         }
     </style>
   </head>
@@ -33,30 +34,7 @@
                 <img src="underdogs_logo.jpeg" class="rounded" alt="Logo" width="150" height="150" style="margin:10px">
             </div>    
             <div class="row" id="matchList">
-            <div class="col col-sm-4">
-            <div class="card text-white bg-dark mb-3">
-                <div class="card-header">Match Date,Day & Time</div>
-                <div class="card-body">
-                    <h6 class="card-title">Venue Name</h6>
-                    <h5 class="card-title">Match Format</h5>
-                <div class="card-title">Cost</div>
-                <p class="card-text" style="font-size:75%">Slots Available: </p>
-                </div>
-                <div class="card-header" style="margin:0 auto"><button type="button" class="btn btn-secondary" style="margin:0 auto,width:150px">Book Slot</button></div>
-            </div>
-        </div>
-        <div class="col col-sm-4">
-            <div class="card text-white bg-dark mb-3 col">
-                <div class="card-header">17 Feb,Saturday 7:30AM</div>
-                <div class="card-body">
-                    <h6 class="card-title">@: Veloct</h6>
-                    <h5 class="card-title">T20</h5>
-                <div class="card-title">&#8377; 500</div>
-                <p class="card-text" style="font-size:75%">Slots Available: 10/24</p>
-                </div>
-                <div class="card-header" style="margin:0 auto"><button type="button" class="btn btn-secondary" style="margin:0 auto;width:150px">Book Slot</button></div>
-            </div>
-            </div>
+            
         </div>
     </div>
 
@@ -86,7 +64,7 @@
 					if(errCode == 0) {
 						
 						$.each(data.results, function(i, vl){
-							
+							if(vl.slotsAvail > 0) {
 							html += '<div class="col col-sm-4">';
 								html += '<div class="card text-white bg-dark mb-3 col">';
 									html += '<div class="card-header">' + vl.matchDt + ' ' + vl.matchTm + '</div>';
@@ -99,6 +77,7 @@
 									html += '<div class="card-header matchBtn" data-id="' + vl.mid + '" style="margin:0 auto"><button type="button" class="btn btn-secondary" style="margin:0 auto;width:150px">Book Slot</button></div>';
 								html += '</div>';
 							html += '</div>';
+                            }
 						});
 						$("#matchList").html(html);
 					}

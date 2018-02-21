@@ -33,7 +33,8 @@
                 <img src="underdogs_logo.jpeg" class="rounded" alt="Logo" width="150" height="150" style="margin:10px">
             </div>    
         
-         <div class="col col-sm-9">
+        
+         <div class="col col-sm-9" id="md">
             <div class="table-responsive">    
                 <table class="table table-sm table-hover table-dark">
                     <thead id="matchList">
@@ -61,7 +62,13 @@
         </div>
         
             <div class="row">
-            <div class="col col-sm-8" style="padding-bottom:30px">
+         <div class="col col-sm-12" id="errMsg">  
+
+			<div class="alert alert-success" role="alert">
+				Registration Successful! Confirm your slot by paying Rs. <span id="errCost"></span> via PayTm/Tez to Abhi @ 9972083064. <a href="index.php">Click Here</a> to book another slot
+			</div>
+		</div>    
+            <div class="col col-sm-8" style="padding-bottom:30px" id="regForm">
                     <div class="form-group">
                         <label for="name">Name:</label>
                         <input type="text" class="form-control" id="name">
@@ -99,7 +106,7 @@
                     <br>
                     <button class="btn btn-secondary btn-lg btn-block" id="register">Register</button>
             </div>
-                <div class="col col-sm-3" style="margin-top:20px">
+                <div class="col col-sm-3" style="margin-top:20px" id="usrList">
                     <div class="table-responsive">    
                         <table class="table table-sm table-hover table-dark">
                             <thead>
@@ -126,11 +133,34 @@
         var mid = "<?=$_GET['id'];?>";
         
 	$(document).ready(function(){
+		
+			$("#errMsg").hide();
             $(document).on("click","#register",function(){
                 var name = $("#name").val();
                 var mobile = $("#mobile").val();
                 var speciality = $("input[name=speciality]:checked").val();
                 var whatsappNo = $("#whatsappNo").val();
+				
+				if(name == "") {
+					alert("Enter Your Name!");
+					$("#name").focus();
+					return false;
+				}
+				else if(mobile == "") {
+					alert("Enter Your Mobile Number!");
+					$("#mobile").focus();
+					return false;
+				}
+				else if(mobile.length != 10 || isNaN(mobile)) {
+					alert("Enter Valid Mobile Number!");
+					$("#mobile").focus();
+					return false;
+				}
+				else if(!speciality) {
+					alert("Select Your Speciality!");
+					return false;
+				}
+				
                 var data = {name:name,mobile:mobile,speciality:speciality,whatsappNo:whatsappNo,matchId:mid};
 			$.ajax({
                             url:"apis/User/register",
@@ -142,7 +172,9 @@
                                     var errMsg = data.error.errMsg;
                                     var html = '';
                                     if(errCode == 0) {
-                                        alert(errMsg);
+                                        $("#errMsg").show();
+                                      
+										$("#regForm,#md,#usrList").hide();
                                         loadMatchDetails(mid);
                                         $("input[type=text],input[type=tel]").val("");
                                     } else {
@@ -172,7 +204,7 @@
 						
                                                 html = '';
 						$.each(data.results, function(i, vl){
-							
+							$("#errCost").text(vl.cost);
 							html += '<tr><th scope="row">Date</th><th scope="row">' + vl.matchDt + '</th></tr>';
                                                         html += '<tr><th scope="row">Time</th><th scope="row">' + vl.matchTm + '</th></tr>';
                                                         html += '<tr><th scope="row">Venue</th><th scope="row">' + vl.venueNm + '</th></tr>';
